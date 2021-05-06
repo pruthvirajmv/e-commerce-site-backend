@@ -17,15 +17,11 @@ const checkUserWishlist = async (req, res, next, id) => {
     }
 }
 
-const getUserWishlist = async(req, res) => {
-    try{
-      const wishlistData = await Wishlist.find({});
-      res.status(200).json({success: true, wishlistData})
-    }
-    catch(err){
-      console.log(err);
-      res.status(400).json({success: false, message: " failed to fetch wishlists", errorMessage: err.message})
-    }
+const getUserWishlist = async (req, res, next) => {
+    let { wishlist } = req;
+    wishlist = await wishlist.populate("products.productId").execPopulate();
+    const wishlistItems = wishlist.products.filter(({ active }) => active)
+    res.status(200).json({ success: true, wishlistItems });
 }
 
 const updateUserWishlist = async (req, res, next) => {
