@@ -1,6 +1,8 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 
+const routeNotFound = require('./middlewares/route-not-found.middleware');
+const errorHandler = require('./middlewares/error-handler.middleware');
+const setHeaders = require('./middlewares/set-headers');
 
 const products = require('./routes/products.route');
 const users = require('./routes/users.route');
@@ -9,22 +11,15 @@ const cart = require('./routes/cart.route');
 
 
 const app = express();
-
 app.use(express.json());
 
 const setupDbConnection  = require('./db/db');
-
 setupDbConnection(); 
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, email, password,username");
-  next();
-});
+app.use(setHeaders);
 
 app.get('/', (req, res) => {
-  res.send('Hello Express app!')
+  res.send('Hello, welcome to BaddyMart Backend!')
 });
 
 app.use('/products', products)
@@ -35,10 +30,9 @@ app.use('/wishlist', wishlist)
 
 app.use('/cart', cart)
 
-//page not found error should be the last route
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: "route not found on server, please check" })
-})
+//page not found & error should be the last route
+app.use(errorHandler);
+app.use(routeNotFound);
 
 const Port = process.env.PORT || 5000
 

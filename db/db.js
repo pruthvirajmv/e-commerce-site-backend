@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
-const mySecret = process.env.DB_PASSWORD;
+const dbURI = process.env.DB_URI;
 
 const setupDbConnection = async () => {
   try{  
-    await mongoose.connect(`mongodb+srv://pruthviraj:${mySecret}@neog-cluster.emlkf.mongodb.net/myCommerceDatabase?retryWrites=true&w=majority`, {
+    await mongoose.connect(dbURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
     })
