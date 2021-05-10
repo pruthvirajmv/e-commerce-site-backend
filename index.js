@@ -11,7 +11,6 @@ const cart = require('./routes/cart.route');
 
 
 const app = express();
-app.use(cors())
 app.use(express.json());
 
 const setupDbConnection  = require('./db/db');
