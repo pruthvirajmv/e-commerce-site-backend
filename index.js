@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors')
 
 const routeNotFound = require('./middlewares/route-not-found.middleware');
 const errorHandler = require('./middlewares/error-handler.middleware');
@@ -12,6 +13,8 @@ const cart = require('./routes/cart.route');
 
 const app = express();
 app.use(express.json());
+
+app.use(cors());
 
 const setupDbConnection  = require('./db/db');
 setupDbConnection(); 

@@ -4,7 +4,7 @@ const { User } = require('../models/user.model');
 const { Wishlist } = require('../models/wishlist.model');
 const { Cart } = require('../models/cart.model');
 
-const getAllUsers = async(req, res, next) => {
+const getAllUsers = async(req, res) => {
     try{
       const users = await User.find({});
       res.status(200).json({success:true, users})
@@ -14,9 +14,10 @@ const getAllUsers = async(req, res, next) => {
     }
 }
 
-const addNewUser = async(req, res, next) =>{
+const addNewUser = async(req, res) =>{
     try{
       const {username,email,password } = req.headers;
+
       const user = {userName: username, email: email, password: password}
       const NewUser = new User(user);
       const addedUser = await NewUser.save();
@@ -37,7 +38,7 @@ const addNewUser = async(req, res, next) =>{
     }
 }
 
-const userLogin = async(req, res, next) => {
+const userLogin = async(req, res) => {
     try{
       const {username,password } = req.headers;
       
@@ -58,7 +59,7 @@ const userLogin = async(req, res, next) => {
     }
 }
 
-const userResetPassword = async(req, res, next) => {
+const userResetPassword = async(req, res) => {
     try{
       const {email,password } = req.headers;
       const updateUserPassword = {password: password}

@@ -1,6 +1,5 @@
 const express = require('express');
 var router = express.Router();
-var cors = require('cors');
 
 const { 
   getAllUsers, 
@@ -16,22 +15,22 @@ const {
 
 router.route('/')
 .get( getAllUsers )
-.post(cors(), addNewUser)
+.post(addNewUser)
 
 router.route('/login')
-.post(cors(), userLogin)
+.post(userLogin)
 
 router.route('/resetpassword')
-.post(cors(), userResetPassword )
+.post(userResetPassword )
 
 
 router.param("userId", checkUserId)
 
 router.route("/:userId")
   .get(getUserProfile)
-  .post(cors(), updateUserProfile)
+  .post(updateUserProfile)
 
 router.route("/:userId/logout")
-  .post(cors(), userLogout)
+  .post(userLogout)
 
 module.exports = router; 
