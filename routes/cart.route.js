@@ -1,19 +1,18 @@
 const express = require('express');
 var router = express.Router();
-var cors = require('cors');
+
 
 const { getAllCarts, checkUserId, getUserCart, updateUserCart } = require('../controllers/cart.controller');
 
 var { Cart } = require('../models/cart.model.js');
 
 
-//for admin or data study
 router.route('/').get(getAllCarts)
 
 router.param("userId", checkUserId)
 
 router.route('/:userId')
-  .get(cors(), getUserCart)
-  .post(cors(), updateUserCart)
+  .get( getUserCart)
+  .post( updateUserCart)
 
 module.exports = router;

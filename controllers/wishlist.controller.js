@@ -17,15 +17,14 @@ const checkUserWishlist = async (req, res, next, id) => {
     }
 }
 
-const getUserWishlist = async (req, res, next) => {
+const getUserWishlist = async (req, res) => {
     let { wishlist } = req;
     wishlist = await wishlist.populate("products.productId").execPopulate();
     const wishlistItems = wishlist.products.filter(({ active }) => active)
     res.status(200).json({ success: true, wishlistItems });
 }
 
-const updateUserWishlist = async (req, res, next) => {
-    console.log(req.body)
+const updateUserWishlist = async (req, res) => {
     let { wishlist } = req;
     const { id } = req.body;
     const inWishlist = wishlist.products.findIndex(({productId}) => productId.toString() === id);
