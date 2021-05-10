@@ -14,12 +14,13 @@ const cart = require('./routes/cart.route');
 const app = express();
 app.use(express.json());
 
-app.use(cors())
 
 const setupDbConnection  = require('./db/db');
 setupDbConnection(); 
 
 app.use(setHeaders);
+
+app.use(cors())
 
 app.get('/', (req, res) => {
   res.send('Hello, welcome to BaddyMart Backend!')
