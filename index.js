@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 
 const routeNotFound = require('./middlewares/route-not-found.middleware');
 const errorHandler = require('./middlewares/error-handler.middleware');
@@ -12,15 +11,14 @@ const cart = require('./routes/cart.route');
 
 
 const app = express();
+app.use(cors())
 app.use(express.json());
-
 
 const setupDbConnection  = require('./db/db');
 setupDbConnection(); 
 
 app.use(setHeaders);
 
-app.use(cors())
 
 app.get('/', (req, res) => {
   res.send('Hello, welcome to BaddyMart Backend!')

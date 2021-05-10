@@ -1,7 +1,7 @@
 
 const { Cart } = require('../models/cart.model');
 
-const getAllCarts = async (req, res) => {
+const getAllCarts = async (req, res, next) => {
     try {
       const carts = await Cart.find({});
       res.status(200).json({ success: true, carts });
@@ -27,14 +27,14 @@ const checkUserId = async (req, res, next, id) => {
     }
 }
 
-const getUserCart = async (req, res) => {
+const getUserCart = async (req, res, next) => {
     let { cart } = req;
     cart = await cart.populate("products.productId").execPopulate();
     const cartItems = cart.products.filter(({ active }) => active)
     res.status(200).json({ success: true, cartItems });
 }
 
-const updateUserCart = async (req, res) => {
+const updateUserCart = async (req, res, next) => {
     let { cart } = req;
     const { id, qty, remove } = req.body;
     const inCart = cart.products.findIndex(({ productId }) => productId.toString() === id)

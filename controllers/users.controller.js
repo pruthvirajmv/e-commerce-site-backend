@@ -4,7 +4,7 @@ const { User } = require('../models/user.model');
 const { Wishlist } = require('../models/wishlist.model');
 const { Cart } = require('../models/cart.model');
 
-const getAllUsers = async(req, res) => {
+const getAllUsers = async(req, res, next) => {
     try{
       const users = await User.find({});
       res.status(200).json({success:true, users})
@@ -14,14 +14,9 @@ const getAllUsers = async(req, res) => {
     }
 }
 
-const addNewUser = async(req, res) =>{
+const addNewUser = async(req, res, next) =>{
     try{
       const {username,email,password } = req.headers;
-
-      if(!(username || email || password)){
-        res.status(400).json({success:false, message: "missing field/s", errorMessage: err.message});
-      }
-
       const user = {userName: username, email: email, password: password}
       const NewUser = new User(user);
       const addedUser = await NewUser.save();
@@ -42,21 +37,17 @@ const addNewUser = async(req, res) =>{
     }
 }
 
-const userLogin = async(req, res) => {
+const userLogin = async(req, res, next) => {
     try{
       const {username,password } = req.headers;
-
-      if(!(username || password)){
-        res.status(400).json({success:false, message: "missing field/s", errorMessage: err.message});
-      }
       
       let user = await User.findOne({userName: username});
   
       if(!user){
-        return res.status(404).json({success:true, message: "Invalid Credentials"})
+        return res.status(404).json({success:true, message: "username does not exist"})
       }
       else if(user.password !== password){
-        return res.status(403).json({success:true, message: "Invalid Credentials"})
+        return res.status(403).json({success:true, message: "incorrect password"})
       }
       user.isUserLoggedIn = true;
       await user.save();
@@ -67,10 +58,11 @@ const userLogin = async(req, res) => {
     }
 }
 
-const userResetPassword = async(req, res) => {
+const userResetPassword = async(req, res, next) => {
     try{
       const {email,password } = req.headers;
       const updateUserPassword = {password: password}
+      console.log(email, password);
       let user = await User.findOne({email: email});
   
       if(!user){
@@ -88,6 +80,7 @@ const userResetPassword = async(req, res) => {
 
 const checkUserId = async (req, res, next, id) => {
     try {
+      console.log(id);
       const user = await User.findById(id);
       if (!user) {
         return res.status(400).json({ success: false, message: "user not found" })
