@@ -44,11 +44,8 @@ const userLogin = async(req, res) => {
       
       let user = await User.findOne({userName: username});
   
-      if(!user){
-        return res.status(404).json({success:true, message: "username does not exist"})
-      }
-      else if(user.password !== password){
-        return res.status(403).json({success:true, message: "incorrect password"})
+      if(!user || (user.password !== password) ){
+        return res.status(403).json({success:true, message: "username and password did not match"})
       }
       user.isUserLoggedIn = true;
       await user.save();
@@ -63,7 +60,6 @@ const userResetPassword = async(req, res) => {
     try{
       const {email,password } = req.headers;
       const updateUserPassword = {password: password}
-      console.log(email, password);
       let user = await User.findOne({email: email});
   
       if(!user){
@@ -81,7 +77,6 @@ const userResetPassword = async(req, res) => {
 
 const checkUserId = async (req, res, next, id) => {
     try {
-      console.log(id);
       const user = await User.findById(id);
       if (!user) {
         return res.status(400).json({ success: false, message: "user not found" })

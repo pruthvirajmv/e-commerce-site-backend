@@ -25,7 +25,6 @@ const getUserWishlist = async (req, res) => {
 }
 
 const updateUserWishlist = async (req, res) => {
-    console.log(req.body)
     let { wishlist } = req;
     const { id } = req.body;
     const inWishlist = wishlist.products.findIndex(({productId}) => productId.toString() === id);
