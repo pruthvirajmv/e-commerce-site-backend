@@ -1,12 +1,14 @@
-const express = require('express');
+const express = require("express");
 var router = express.Router();
 
-const { checkUserWishlist, getUserWishlist, updateUserWishlist } = require('../controllers/wishlist.controller');
+const {
+   findUserWishlist,
+   getUserWishlist,
+   updateUserWishlist,
+} = require("../controllers/wishlist.controller");
 
-router.param("userId", checkUserWishlist )
+router.use(findUserWishlist);
 
-router.route('/:userId')
-  .get( getUserWishlist)
-  .post(updateUserWishlist)
+router.route("/").get(getUserWishlist).post(updateUserWishlist);
 
 module.exports = router;
