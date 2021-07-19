@@ -1,5 +1,3 @@
-const { extend } = require("lodash");
-
 const { Wishlist } = require("../models/wishlist.model.js");
 
 const findUserWishlist = async (req, res, next) => {

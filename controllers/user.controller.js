@@ -2,6 +2,7 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const JWT_KEY = process.env.JWT_KEY;
 const bcrypt = require("bcrypt");
+const { extend } = require("lodash");
 
 const { User } = require("../models/user.model");
 const { Wishlist } = require("../models/wishlist.model");
@@ -9,10 +10,11 @@ const { Cart } = require("../models/cart.model");
 
 const addNewUser = async (req, res) => {
    try {
-      const { username, email, password } = req.headers;
+      const { name, email, password } = req.headers;
+      console.log(name, email, password);
 
       const user = {
-         name: username,
+         name: name,
          email: email,
          password: password,
       };
@@ -47,10 +49,10 @@ const addNewUser = async (req, res) => {
 
 const userLogin = async (req, res) => {
    try {
-      const { username, password } = req.headers;
+      const { email, password } = req.headers;
 
       const user = await User.findOne({
-         name: username,
+         email: email,
       });
 
       if (user) {
@@ -65,7 +67,7 @@ const userLogin = async (req, res) => {
          } else {
             return res.status(403).json({
                success: false,
-               message: "username and password did not match",
+               message: "email and password did not match",
             });
          }
       } else {
@@ -124,10 +126,10 @@ const getUserProfile = (req, res) => {
 };
 
 const updateUserProfile = async (req, res) => {
-   const { username } = req.headers;
+   const { name } = req.headers;
    let { user } = req;
    try {
-      user.name = username;
+      user.name = name;
       user = await user.save();
       return res.status(200).json({
          success: true,
@@ -143,10 +145,61 @@ const updateUserProfile = async (req, res) => {
    }
 };
 
+const addDeliveryAddress = async (req, res) => {
+   try {
+      const { user } = req;
+      const { address } = req.body;
+
+      user.addresses.push(address);
+      await user.save();
+
+      return res.status(200).json({ message: "new address added", addresses: user.addresses });
+   } catch (error) {
+      res.status(500).json({ message: "could not add new address", errorMessage: err.message });
+   }
+};
+
+const updateDeliveryAddress = async (req, res) => {
+   try {
+      const { user } = req;
+      const { address } = req.body;
+
+      user.addresses = user.addresses.find((address) => {
+         if (_id === address._id) {
+            return extend(address, address);
+         }
+         return address;
+      });
+      await user.save();
+
+      return res.status(200).json({ message: "address udated", addresses: user.addresses });
+   } catch (error) {
+      res.status(500).json({ message: "could not update address", errorMessage: err.message });
+   }
+};
+
+const deleteDeliveryAddress = async (req, res) => {
+   try {
+      const { user } = req;
+      const { address } = req.body;
+
+      user.addresses = user.addresses.filter(({ _id }) => _id !== address._id);
+      await user.save();
+
+      return res.status(200).json({ message: "address udated", addresses: user.addresses });
+   } catch (error) {
+      res.status(500).json({ message: "could not delete address", errorMessage: err.message });
+   }
+};
+
 module.exports = {
    addNewUser,
    userLogin,
    userResetPassword,
    getUserProfile,
    updateUserProfile,
+
+   addDeliveryAddress,
+   updateDeliveryAddress,
+   deleteDeliveryAddress,
 };

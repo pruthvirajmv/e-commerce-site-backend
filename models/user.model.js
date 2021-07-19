@@ -18,6 +18,22 @@ const UserSchema = new mongoose.Schema(
          type: String,
          required: true,
       },
+      addresses: [
+         {
+            name: { type: String },
+            house: { type: String },
+            street: { type: String },
+            city: { type: String },
+            pincode: {
+               type: Number,
+               min: 6,
+               max: 6,
+            },
+            state: { type: String },
+            country: { type: String },
+            phoneNumber: { type: Number, min: 10, max: 10 },
+         },
+      ],
    },
    {
       timestamps: true,
