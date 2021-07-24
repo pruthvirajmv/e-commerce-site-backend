@@ -11,7 +11,6 @@ const { Cart } = require("../models/cart.model");
 const addNewUser = async (req, res) => {
    try {
       const { name, email, password } = req.headers;
-      console.log(name, email, password);
 
       const user = {
          name: name,
@@ -149,13 +148,12 @@ const addDeliveryAddress = async (req, res) => {
    try {
       const { user } = req;
       const { address } = req.body;
-
       user.addresses.push(address);
       await user.save();
 
       return res.status(200).json({ message: "new address added", addresses: user.addresses });
    } catch (error) {
-      res.status(500).json({ message: "could not add new address", errorMessage: err.message });
+      res.status(500).json({ message: "could not add new address", errorMessage: error.message });
    }
 };
 
@@ -163,32 +161,34 @@ const updateDeliveryAddress = async (req, res) => {
    try {
       const { user } = req;
       const { address } = req.body;
+      console.log(address);
 
-      user.addresses = user.addresses.find((address) => {
-         if (_id === address._id) {
-            return extend(address, address);
+      user.addresses = user.addresses.map((existingAddress) => {
+         if (existingAddress._id.toString() === address._id) {
+            return extend(existingAddress, address);
          }
-         return address;
+         return existingAddress;
       });
       await user.save();
 
       return res.status(200).json({ message: "address udated", addresses: user.addresses });
    } catch (error) {
-      res.status(500).json({ message: "could not update address", errorMessage: err.message });
+      console.log(error);
+      res.status(500).json({ message: "could not update address", errorMessage: error.message });
    }
 };
 
-const deleteDeliveryAddress = async (req, res) => {
+const removeDeliveryAddress = async (req, res) => {
    try {
       const { user } = req;
       const { address } = req.body;
 
-      user.addresses = user.addresses.filter(({ _id }) => _id !== address._id);
+      user.addresses = user.addresses.filter(({ _id }) => _id.toString() !== address._id);
       await user.save();
 
       return res.status(200).json({ message: "address udated", addresses: user.addresses });
    } catch (error) {
-      res.status(500).json({ message: "could not delete address", errorMessage: err.message });
+      res.status(500).json({ message: "could not delete address", errorMessage: error.message });
    }
 };
 
@@ -201,5 +201,5 @@ module.exports = {
 
    addDeliveryAddress,
    updateDeliveryAddress,
-   deleteDeliveryAddress,
+   removeDeliveryAddress,
 };

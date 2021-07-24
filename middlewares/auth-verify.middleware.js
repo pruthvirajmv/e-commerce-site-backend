@@ -8,7 +8,7 @@ const authVerify = async (req, res, next) => {
       const tokenWithBearer = req.headers.authorization;
       const token = tokenWithBearer.split(" ")[1];
       const decodedToken = jwt.verify(token, JWT_KEY);
-      console.log(decodedToken);
+      const { userId } = decodedToken;
       const user = await User.findById(userId);
       if (!user) {
          res.status(401).json({ message: "Unauthorized request" });
