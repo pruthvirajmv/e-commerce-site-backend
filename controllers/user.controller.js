@@ -161,7 +161,6 @@ const updateDeliveryAddress = async (req, res) => {
    try {
       const { user } = req;
       const { address } = req.body;
-      console.log(address);
 
       user.addresses = user.addresses.map((existingAddress) => {
          if (existingAddress._id.toString() === address._id) {
@@ -173,7 +172,6 @@ const updateDeliveryAddress = async (req, res) => {
 
       return res.status(200).json({ message: "address udated", addresses: user.addresses });
    } catch (error) {
-      console.log(error);
       res.status(500).json({ message: "could not update address", errorMessage: error.message });
    }
 };

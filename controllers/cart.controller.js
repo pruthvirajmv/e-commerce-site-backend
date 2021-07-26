@@ -5,7 +5,6 @@ const getAllCarts = async (req, res) => {
       const carts = await Cart.find({});
       res.status(200).json({ success: true, carts });
    } catch (err) {
-      console.log(err);
       res.status(400).json({
          success: false,
          message: "could not fetch the carts",
@@ -35,7 +34,7 @@ const findUserCart = async (req, res, next) => {
 const getUserCart = async (req, res) => {
    let { cart } = req;
    cart = await cart.populate("products.productId").execPopulate();
-   const cartItems = cart.products.filter(({ active }) => active);
+   const cartItems = cart.products;
    res.status(200).json({ success: true, cartItems });
 };
 
@@ -45,19 +44,17 @@ const updateUserCart = async (req, res) => {
    const inCart = cart.products.findIndex(({ productId }) => productId.toString() === id);
 
    if (remove) {
-      cart.products[inCart].active = false;
-      cart.products[inCart].quantity = 1;
+      cart.products = cart.products.filter(({ productId }) => productId.toString() !== id);
    } else {
       if (inCart >= 0) {
          cart.products[inCart].quantity = qty;
-         cart.products[inCart].active = true;
-      } else cart.products.push({ productId: id, quantity: qty, active: true });
+      } else cart.products.push({ productId: id, quantity: qty });
    }
    await cart.save();
 
    cart = await cart.populate("products.productId").execPopulate();
 
-   const cartItems = cart.products.filter((item) => item.active);
+   const cartItems = cart.products;
 
    res.status(200).json({ success: true, cartItems });
 };

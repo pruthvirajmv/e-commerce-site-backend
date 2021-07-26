@@ -11,6 +11,7 @@ const products = require("./routes/product.route");
 const user = require("./routes/user.route");
 const wishlist = require("./routes/wishlist.route");
 const cart = require("./routes/cart.route");
+const order = require("./routes/order.route");
 
 const app = express();
 app.use(express.json());
@@ -33,36 +34,7 @@ app.use(authVerify);
 
 app.use("/wishlist", wishlist);
 app.use("/cart", cart);
-
-const Razorpay = require("razorpay");
-const razorpay = new Razorpay({
-   key_id: "rzp_test_AvLBL29oCvEXUZ",
-   key_secret: "5JefvUIYnE3rUsgcCAEBGIom",
-});
-app.post("/razorpay", async (req, res) => {
-   const payment_capture = 1;
-   const amount = 499;
-   const currency = "INR";
-
-   const options = {
-      amount: amount * 100,
-      currency,
-      receipt: shortid.generate(),
-      payment_capture,
-   };
-
-   try {
-      const response = await razorpay.orders.create(options);
-      console.log(response);
-      res.json({
-         id: response.id,
-         currency: response.currency,
-         amount: response.amount,
-      });
-   } catch (error) {
-      console.log(error);
-   }
-});
+app.use("/order", order);
 
 //page not found & error should be the last route
 app.use(errorHandler);
